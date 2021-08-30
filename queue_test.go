@@ -217,12 +217,12 @@ func TestRemove(t *testing.T) {
 	defer teardown()
 
 	addJobs(t, q,
-		Job{Content: "oldest", When: time.Now().Add(-300 * time.Millisecond), ID: 1},
+		Job{Content: "oldest", When: time.Now().Add(-300 * time.Millisecond), ID: "01"},
 		Job{Content: "newer", When: time.Now().Add(-100 * time.Millisecond)},
-		Job{Content: "older", When: time.Now().Add(-200 * time.Millisecond), ID: 2},
+		Job{Content: "older", When: time.Now().Add(-200 * time.Millisecond), ID: "02"},
 	)
 
-	q.Remove(1, 2)
+	q.Remove("01", "02")
 
 	jobs, err := q.PopJobs(3)
 	if err != nil {

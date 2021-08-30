@@ -681,7 +681,7 @@ func ___decodeAsMap(data []byte, i interface{}) (bool, error) {
 func ___calcArraySizeId_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7d80eaf5(v job.Id, encoder *enc.Encoder) (int, error) {
 	size := 0
 	size += encoder.CalcStructHeaderFix(1)
-	size += encoder.CalcUint64(v.Id)
+	size += encoder.CalcString(v.Id)
 	return size, nil
 }
 
@@ -690,7 +690,7 @@ func ___calcMapSizeId_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7d
 	size := 0
 	size += encoder.CalcStructHeaderFix(1)
 	size += encoder.CalcStringFix(2)
-	size += encoder.CalcUint64(v.Id)
+	size += encoder.CalcString(v.Id)
 	return size, nil
 }
 
@@ -698,7 +698,7 @@ func ___calcMapSizeId_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7d
 func ___encodeArrayId_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7d80eaf5(v job.Id, encoder *enc.Encoder, offset int) ([]byte, int, error) {
 	var err error
 	offset = encoder.WriteStructHeaderFixAsArray(1, offset)
-	offset = encoder.WriteUint64(v.Id, offset)
+	offset = encoder.WriteString(v.Id, offset)
 	return encoder.EncodedBytes(), offset, err
 }
 
@@ -707,7 +707,7 @@ func ___encodeMapId_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7d80
 	var err error
 	offset = encoder.WriteStructHeaderFixAsMap(1, offset)
 	offset = encoder.WriteStringFix("Id", 2, offset)
-	offset = encoder.WriteUint64(v.Id, offset)
+	offset = encoder.WriteString(v.Id, offset)
 	return encoder.EncodedBytes(), offset, err
 }
 
@@ -718,8 +718,8 @@ func ___decodeArrayId_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7d
 		return 0, err
 	}
 	{
-		var vv uint64
-		vv, offset, err = decoder.AsUint64(offset)
+		var vv string
+		vv, offset, err = decoder.AsString(offset)
 		if err != nil {
 			return 0, err
 		}
@@ -763,8 +763,8 @@ func ___decodeMapId_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7d80
 		switch fieldIndex {
 		case 0:
 			{
-				var vv uint64
-				vv, offset, err = decoder.AsUint64(offset)
+				var vv string
+				vv, offset, err = decoder.AsString(offset)
 				if err != nil {
 					return 0, err
 				}
@@ -989,7 +989,7 @@ func ___decodeMapIdList_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e
 func ___calcArraySizeJob_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7d80eaf5(v job.Job, encoder *enc.Encoder) (int, error) {
 	size := 0
 	size += encoder.CalcStructHeaderFix(4)
-	size += encoder.CalcUint64(v.Id)
+	size += encoder.CalcString(v.Id)
 	size += encoder.CalcString(v.Content)
 	size += encoder.CalcBool(v.Unique)
 	size += encoder.CalcInt64(v.When)
@@ -1001,7 +1001,7 @@ func ___calcMapSizeJob_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7
 	size := 0
 	size += encoder.CalcStructHeaderFix(4)
 	size += encoder.CalcStringFix(2)
-	size += encoder.CalcUint64(v.Id)
+	size += encoder.CalcString(v.Id)
 	size += encoder.CalcStringFix(7)
 	size += encoder.CalcString(v.Content)
 	size += encoder.CalcStringFix(6)
@@ -1015,7 +1015,7 @@ func ___calcMapSizeJob_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7
 func ___encodeArrayJob_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7d80eaf5(v job.Job, encoder *enc.Encoder, offset int) ([]byte, int, error) {
 	var err error
 	offset = encoder.WriteStructHeaderFixAsArray(4, offset)
-	offset = encoder.WriteUint64(v.Id, offset)
+	offset = encoder.WriteString(v.Id, offset)
 	offset = encoder.WriteString(v.Content, offset)
 	offset = encoder.WriteBool(v.Unique, offset)
 	offset = encoder.WriteInt64(v.When, offset)
@@ -1027,7 +1027,7 @@ func ___encodeMapJob_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7d8
 	var err error
 	offset = encoder.WriteStructHeaderFixAsMap(4, offset)
 	offset = encoder.WriteStringFix("Id", 2, offset)
-	offset = encoder.WriteUint64(v.Id, offset)
+	offset = encoder.WriteString(v.Id, offset)
 	offset = encoder.WriteStringFix("Content", 7, offset)
 	offset = encoder.WriteString(v.Content, offset)
 	offset = encoder.WriteStringFix("Unique", 6, offset)
@@ -1044,8 +1044,8 @@ func ___decodeArrayJob_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7
 		return 0, err
 	}
 	{
-		var vv uint64
-		vv, offset, err = decoder.AsUint64(offset)
+		var vv string
+		vv, offset, err = decoder.AsString(offset)
 		if err != nil {
 			return 0, err
 		}
@@ -1116,8 +1116,8 @@ func ___decodeMapJob_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7d8
 		switch fieldIndex {
 		case 0:
 			{
-				var vv uint64
-				vv, offset, err = decoder.AsUint64(offset)
+				var vv string
+				vv, offset, err = decoder.AsString(offset)
 				if err != nil {
 					return 0, err
 				}
@@ -1523,7 +1523,7 @@ func ___calcArraySizeJob_8077c75a8ca73d01cf65fede8de7a6258b0b5424ffa58f06b438eb1
 	size := 0
 	size += encoder.CalcStructHeaderFix(3)
 	size += encoder.CalcString(v.CompressedContent)
-	size += encoder.CalcUint64(v.ID)
+	size += encoder.CalcString(v.ID)
 	size += encoder.CalcInt64(v.WhenUnixNano)
 	return size, nil
 }
@@ -1535,7 +1535,7 @@ func ___calcMapSizeJob_8077c75a8ca73d01cf65fede8de7a6258b0b5424ffa58f06b438eb1f3
 	size += encoder.CalcStringFix(7)
 	size += encoder.CalcString(v.CompressedContent)
 	size += encoder.CalcStringFix(2)
-	size += encoder.CalcUint64(v.ID)
+	size += encoder.CalcString(v.ID)
 	size += encoder.CalcStringFix(4)
 	size += encoder.CalcInt64(v.WhenUnixNano)
 	return size, nil
@@ -1546,7 +1546,7 @@ func ___encodeArrayJob_8077c75a8ca73d01cf65fede8de7a6258b0b5424ffa58f06b438eb1f3
 	var err error
 	offset = encoder.WriteStructHeaderFixAsArray(3, offset)
 	offset = encoder.WriteString(v.CompressedContent, offset)
-	offset = encoder.WriteUint64(v.ID, offset)
+	offset = encoder.WriteString(v.ID, offset)
 	offset = encoder.WriteInt64(v.WhenUnixNano, offset)
 	return encoder.EncodedBytes(), offset, err
 }
@@ -1558,7 +1558,7 @@ func ___encodeMapJob_8077c75a8ca73d01cf65fede8de7a6258b0b5424ffa58f06b438eb1f3f7
 	offset = encoder.WriteStringFix("content", 7, offset)
 	offset = encoder.WriteString(v.CompressedContent, offset)
 	offset = encoder.WriteStringFix("id", 2, offset)
-	offset = encoder.WriteUint64(v.ID, offset)
+	offset = encoder.WriteString(v.ID, offset)
 	offset = encoder.WriteStringFix("when", 4, offset)
 	offset = encoder.WriteInt64(v.WhenUnixNano, offset)
 	return encoder.EncodedBytes(), offset, err
@@ -1579,8 +1579,8 @@ func ___decodeArrayJob_8077c75a8ca73d01cf65fede8de7a6258b0b5424ffa58f06b438eb1f3
 		v.CompressedContent = vv
 	}
 	{
-		var vv uint64
-		vv, offset, err = decoder.AsUint64(offset)
+		var vv string
+		vv, offset, err = decoder.AsString(offset)
 		if err != nil {
 			return 0, err
 		}
@@ -1644,8 +1644,8 @@ func ___decodeMapJob_8077c75a8ca73d01cf65fede8de7a6258b0b5424ffa58f06b438eb1f3f7
 			count++
 		case 1:
 			{
-				var vv uint64
-				vv, offset, err = decoder.AsUint64(offset)
+				var vv string
+				vv, offset, err = decoder.AsString(offset)
 				if err != nil {
 					return 0, err
 				}

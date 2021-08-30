@@ -4,7 +4,7 @@ package job;
 option go_package = ".;job";
 
 message Id {
-  uint64 id = 1;
+  string id = 1;
 }
 
 message IdList {
@@ -12,7 +12,7 @@ message IdList {
 }
 
 message Job {
-  uint64 id = 1;
+  string id = 1;
   string content = 2;
   bool unique = 3;
   int64 when = 4;

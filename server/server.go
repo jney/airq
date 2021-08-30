@@ -54,7 +54,7 @@ func (s Server) Push(ctx context.Context, jobList *job.JobList) (*job.IdList, er
 }
 
 func (s Server) Remove(ctx context.Context, jobs *job.IdList) (*job.Void, error) {
-	var ids []uint64
+	var ids []string
 	for _, i := range jobs.GetIds() {
 		ids = append(ids, i.Id)
 	}

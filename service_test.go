@@ -66,8 +66,8 @@ func TestService(t *testing.T) {
 	}
 	cli := client.New(conn)
 	idList, err := cli.Push(context.Background(),
-		&airq.Job{ID: 1, Content: "foo", When: time.Unix(0, 1)},
-		&airq.Job{ID: 2, Content: "bar", When: time.Unix(0, 2)},
+		&airq.Job{ID: "01", Content: "foo", When: time.Unix(0, 1)},
+		&airq.Job{ID: "02", Content: "bar", When: time.Unix(0, 2)},
 	)
 	if err != nil {
 		t.Error(err)
@@ -75,7 +75,7 @@ func TestService(t *testing.T) {
 	if len(idList.Ids) != 2 {
 		t.Error("2 ids should have been generated")
 	}
-	if err := cli.Remove(context.Background(), 1); err != nil {
+	if err := cli.Remove(context.Background(), "01"); err != nil {
 		t.Error(err)
 	}
 }

@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/cespare/xxhash/v2 v2.1.2
 	github.com/gomodule/redigo v1.8.5
+	github.com/rs/xid v1.3.0
 	github.com/shamaton/msgpackgen v0.3.0
 	google.golang.org/grpc v1.40.0
 	google.golang.org/protobuf v1.27.1

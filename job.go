@@ -1,13 +1,16 @@
 package airq
 
+//go:generate msgpackgen -strict
+
 import (
 	"bytes"
 	"compress/gzip"
-	"hash/maphash"
 	"io/ioutil"
+	"strconv"
 	"time"
 
 	"github.com/cespare/xxhash/v2"
+	"github.com/rs/xid"
 	"github.com/shamaton/msgpackgen/msgpack"
 )
 
@@ -15,7 +18,7 @@ import (
 type Job struct {
 	CompressedContent string    `msgpack:"content"`
 	Content           string    `msgpack:"-"`
-	ID                uint64    `msgpack:"id"`
+	ID                string    `msgpack:"id"`
 	Unique            bool      `msgpack:"-"`
 	When              time.Time `msgpack:"-"`
 	WhenUnixNano      int64     `msgpack:"when"`
@@ -37,11 +40,11 @@ func uncompress(in string) string {
 	return string(s)
 }
 
-func (j *Job) generateID() uint64 {
+func (j *Job) generateID() string {
 	if j.Unique {
-		return new(maphash.Hash).Sum64()
+		return xid.New().String()
 	}
-	return xxhash.Sum64String(j.Content)
+	return strconv.FormatUint(xxhash.Sum64String(j.Content), 10)
 }
 
 func (j *Job) setDefaults() {
@@ -50,7 +53,7 @@ func (j *Job) setDefaults() {
 		j.When = time.Now()
 	}
 	j.WhenUnixNano = j.When.UnixNano()
-	if j.ID == 0 {
+	if j.ID == "" {
 		j.ID = j.generateID()
 	}
 }
