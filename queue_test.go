@@ -27,7 +27,7 @@ func setup(t *testing.T) (*Queue, func()) {
 	return q, teardown
 }
 
-func addJobs(t *testing.T, q *Queue, jobs []Job) {
+func addJobs(t *testing.T, q *Queue, jobs ...Job) {
 	for _, job := range jobs {
 		if _, err := q.Push(&job); err != nil {
 			t.Error(err)
@@ -135,11 +135,11 @@ func TestPopOrder(t *testing.T) {
 	q, teardown := setup(t)
 	defer teardown()
 
-	addJobs(t, q, []Job{
+	addJobs(t, q,
 		Job{Content: "oldest", When: time.Now().Add(-300 * time.Millisecond)},
 		Job{Content: "newer", When: time.Now().Add(-100 * time.Millisecond)},
 		Job{Content: "older", When: time.Now().Add(-200 * time.Millisecond)},
-	})
+	)
 
 	job, err := q.Pop()
 	if err != nil {
@@ -185,11 +185,11 @@ func TestPopMultiOrder(t *testing.T) {
 	q, teardown := setup(t)
 	defer teardown()
 
-	addJobs(t, q, []Job{
+	addJobs(t, q,
 		Job{Content: "oldest", When: time.Now().Add(-300 * time.Millisecond)},
 		Job{Content: "newer", When: time.Now().Add(-100 * time.Millisecond)},
 		Job{Content: "older", When: time.Now().Add(-200 * time.Millisecond)},
-	})
+	)
 
 	jobs, err := q.PopJobs(3)
 	if err != nil {
@@ -216,13 +216,13 @@ func TestRemove(t *testing.T) {
 	q, teardown := setup(t)
 	defer teardown()
 
-	addJobs(t, q, []Job{
-		Job{Content: "oldest", When: time.Now().Add(-300 * time.Millisecond), ID: "01"},
+	addJobs(t, q,
+		Job{Content: "oldest", When: time.Now().Add(-300 * time.Millisecond), ID: 1},
 		Job{Content: "newer", When: time.Now().Add(-100 * time.Millisecond)},
-		Job{Content: "older", When: time.Now().Add(-200 * time.Millisecond), ID: "02"},
-	})
+		Job{Content: "older", When: time.Now().Add(-200 * time.Millisecond), ID: 2},
+	)
 
-	q.Remove("01", "02")
+	q.Remove(1, 2)
 
 	jobs, err := q.PopJobs(3)
 	if err != nil {

@@ -3,21 +3,19 @@ package airq
 import (
 	"bytes"
 	"compress/gzip"
-	"crypto/sha1"
-	"encoding/hex"
-	"io"
+	"hash/maphash"
 	"io/ioutil"
 	"time"
 
-	"github.com/rs/xid"
-	"github.com/vmihailenco/msgpack"
+	"github.com/cespare/xxhash/v2"
+	"github.com/shamaton/msgpackgen/msgpack"
 )
 
 // Job is the struct of job in queue
 type Job struct {
 	CompressedContent string    `msgpack:"content"`
 	Content           string    `msgpack:"-"`
-	ID                string    `msgpack:"id"`
+	ID                uint64    `msgpack:"id"`
 	Unique            bool      `msgpack:"-"`
 	When              time.Time `msgpack:"-"`
 	WhenUnixNano      int64     `msgpack:"when"`
@@ -39,24 +37,22 @@ func uncompress(in string) string {
 	return string(s)
 }
 
-func (j *Job) generateID() string {
+func (j *Job) generateID() uint64 {
 	if j.Unique {
-		return xid.New().String()
+		return new(maphash.Hash).Sum64()
 	}
-	h := sha1.New()
-	io.WriteString(h, j.Content)
-	return hex.EncodeToString(h.Sum(nil))
+	return xxhash.Sum64String(j.Content)
 }
 
 func (j *Job) setDefaults() {
 	j.CompressedContent = compress(j.Content)
-	if j.ID == "" {
-		j.ID = j.generateID()
-	}
 	if j.When.IsZero() {
 		j.When = time.Now()
 	}
 	j.WhenUnixNano = j.When.UnixNano()
+	if j.ID == 0 {
+		j.ID = j.generateID()
+	}
 }
 
 func (j *Job) String() string {

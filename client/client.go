@@ -33,7 +33,7 @@ func (c *Client) Push(ctx context.Context, jobs ...*airq.Job) (*job.IdList, erro
 	return client.Push(ctx, jobList)
 }
 
-func (c *Client) Remove(ctx context.Context, ids ...string) error {
+func (c *Client) Remove(ctx context.Context, ids ...uint64) error {
 	if len(ids) == 0 {
 		return nil
 	}

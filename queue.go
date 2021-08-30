@@ -65,9 +65,9 @@ func New(name string, opt Option) *Queue {
 // Push schedule a job at some point in the future, or some point in the past.
 // Scheduling a job far in the past is the same as giving it a high priority,
 // as jobs are popped in order of due date.
-func (q *Queue) Push(jobs ...*Job) (ids []string, err error) {
+func (q *Queue) Push(jobs ...*Job) (ids []uint64, err error) {
 	if len(jobs) == 0 {
-		return []string{}, fmt.Errorf("no jobs provided")
+		return ids, fmt.Errorf("no jobs provided")
 	}
 	c, managed := q.conn()
 	if managed {
@@ -130,7 +130,7 @@ func (q *Queue) PopJobs(limit int) (res []string, err error) {
 }
 
 // Remove removes a job from the queue
-func (q *Queue) Remove(ids ...string) error {
+func (q *Queue) Remove(ids ...uint64) error {
 	if len(ids) == 0 {
 		return fmt.Errorf("no id provided")
 	}

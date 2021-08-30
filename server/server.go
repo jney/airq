@@ -12,7 +12,8 @@ import (
 
 type Server struct {
 	*grpc.Server
-	Queue *airq.Queue
+	job.JobsServer
+	*airq.Queue
 }
 
 func New(q *airq.Queue) Server {
@@ -53,7 +54,7 @@ func (s Server) Push(ctx context.Context, jobList *job.JobList) (*job.IdList, er
 }
 
 func (s Server) Remove(ctx context.Context, jobs *job.IdList) (*job.Void, error) {
-	var ids []string
+	var ids []uint64
 	for _, i := range jobs.GetIds() {
 		ids = append(ids, i.Id)
 	}
