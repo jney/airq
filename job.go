@@ -3,14 +3,13 @@ package airq
 import (
 	"bytes"
 	"compress/gzip"
-	"crypto/rand"
 	"crypto/sha1"
-	"encoding/base64"
 	"encoding/hex"
 	"io"
 	"io/ioutil"
 	"time"
 
+	"github.com/rs/xid"
 	"github.com/vmihailenco/msgpack"
 )
 
@@ -42,9 +41,7 @@ func uncompress(in string) string {
 
 func (j *Job) generateID() string {
 	if j.Unique {
-		b := make([]byte, 40)
-		rand.Read(b)
-		return base64.URLEncoding.EncodeToString(b)
+		return xid.New().String()
 	}
 	h := sha1.New()
 	io.WriteString(h, j.Content)
