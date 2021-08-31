@@ -133,5 +133,5 @@ var Jobs_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "job.proto",
+	Metadata: "job/job.proto",
 }

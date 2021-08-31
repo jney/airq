@@ -1,7 +1,5 @@
 package airq
 
-//go:generate msgpackgen -strict
-
 import (
 	"bytes"
 	"compress/gzip"
