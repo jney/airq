@@ -62,7 +62,7 @@ q := airq.New("queue_name", airq.WithConn(c))
 for !timeToQuit {
   job, err = q.Pop()
   if err != nil { ... }
-  if job != "" {
+  if job != nil {
     // process the job.
   } else {
     time.Sleep(2*time.Second)
@@ -79,15 +79,14 @@ defer c.Close()
 
 q := airq.New("queue_name", airq.WithConn(c))
 
-for !timeToQuit {
-  jobs, err := q.PopJobs(100) // argument is "limit"
-  if err != nil { ... }
-  if len(jobs) > 0 {
-    for i, job := range jobs {
-      // process the job.
-    }
-  } else {
-    time.Sleep(2*time.Second)
+q.Loop(func (jobs []*airq.Job, err error) {
+  for i, job := range jobs {
+    // process the job.
   }
-}
+}, nil)
 ```
+
+## TODO
+
+- pass context
+- check if working with `[]byte` can be done
