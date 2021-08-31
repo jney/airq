@@ -3,8 +3,8 @@ package client
 import (
 	"context"
 
-	"github.com/missena-corp/airq"
-	"github.com/missena-corp/airq/job"
+	"github.com/jney/airq"
+	"github.com/jney/airq/job"
 	"google.golang.org/grpc"
 )
 

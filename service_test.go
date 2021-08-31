@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/gomodule/redigo/redis"
-	"github.com/missena-corp/airq"
-	"github.com/missena-corp/airq/client"
-	"github.com/missena-corp/airq/server"
+	"github.com/jney/airq"
+	"github.com/jney/airq/client"
+	"github.com/jney/airq/server"
 	"google.golang.org/grpc"
 )
 

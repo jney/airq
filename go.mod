@@ -1,4 +1,4 @@
-module github.com/missena-corp/airq
+module github.com/jney/airq
 
 go 1.17
 

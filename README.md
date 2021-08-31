@@ -1,4 +1,4 @@
-# Air Q (*r*edis *q*ueue) <a href="https://travis-ci.com/missena-corp/airq"><img src="https://travis-ci.com/missena-corp/airq.svg?branch=master" alt="Build Status"></a>
+# Air Q (*r*edis *q*ueue) <a href="https://travis-ci.com/jney/airq"><img src="https://travis-ci.com/jney/airq.svg?branch=master" alt="Build Status"></a>
 
 ## What and why
 
@@ -27,7 +27,7 @@ I liked this solution a lot but i missed a few features.
 Adding jobs to a queue.
 
 ```go
-import "github.com/missena-corp/airq"
+import "github.com/jney/airq"
 ```
 
 ```go
