@@ -3,15 +3,21 @@ package airq
 import (
 	"bytes"
 	"compress/gzip"
-	"crypto/rand"
-	"crypto/sha1"
-	"encoding/base64"
-	"encoding/hex"
-	"io"
 	"io/ioutil"
+	"strconv"
 	"time"
 
-	"github.com/vmihailenco/msgpack"
+	"github.com/cespare/xxhash/v2"
+	"github.com/rs/xid"
+	"github.com/shamaton/msgpackgen/msgpack"
+)
+
+type Strategy int
+
+const (
+	UpdateStrategy Strategy = iota // update the job with same signature (change execution time)
+	CreateStrategy                 // create a new job even if it's the same signature
+	KeepStrategy                   // [TODO] keep the one already in keep (don't do anything)
 )
 
 // Job is the struct of job in queue
@@ -19,7 +25,7 @@ type Job struct {
 	CompressedContent string    `msgpack:"content"`
 	Content           string    `msgpack:"-"`
 	ID                string    `msgpack:"id"`
-	Unique            bool      `msgpack:"-"`
+	Strategy          Strategy  `msgpack:"-"`
 	When              time.Time `msgpack:"-"`
 	WhenUnixNano      int64     `msgpack:"when"`
 }
@@ -41,25 +47,21 @@ func uncompress(in string) string {
 }
 
 func (j *Job) generateID() string {
-	if j.Unique {
-		b := make([]byte, 40)
-		rand.Read(b)
-		return base64.URLEncoding.EncodeToString(b)
+	if j.Strategy == CreateStrategy {
+		return xid.New().String()
 	}
-	h := sha1.New()
-	io.WriteString(h, j.Content)
-	return hex.EncodeToString(h.Sum(nil))
+	return strconv.FormatUint(xxhash.Sum64String(j.Content), 10)
 }
 
 func (j *Job) setDefaults() {
 	j.CompressedContent = compress(j.Content)
-	if j.ID == "" {
-		j.ID = j.generateID()
-	}
 	if j.When.IsZero() {
 		j.When = time.Now()
 	}
 	j.WhenUnixNano = j.When.UnixNano()
+	if j.ID == "" {
+		j.ID = j.generateID()
+	}
 }
 
 func (j *Job) String() string {

@@ -3,7 +3,6 @@ language: go
 services:
   - docker
 before_install:
-  - export GO111MODULE=on
   - docker run -p 6379:6379 -d redis
   - go mod vendor
 script:

@@ -12,7 +12,8 @@ import (
 
 type Server struct {
 	*grpc.Server
-	Queue *airq.Queue
+	job.JobsServer
+	*airq.Queue
 }
 
 func New(q *airq.Queue) Server {
@@ -36,10 +37,10 @@ func (s Server) Push(ctx context.Context, jobList *job.JobList) (*job.IdList, er
 	idList := new(job.IdList)
 	for _, j := range jobList.Jobs {
 		jobs = append(jobs, &airq.Job{
-			ID:      j.GetId(),
-			Content: j.GetContent(),
-			Unique:  j.GetUnique(),
-			When:    time.Unix(0, j.GetWhen()),
+			ID:       j.GetId(),
+			Content:  j.GetContent(),
+			Strategy: airq.Strategy(j.GetStrategy()),
+			When:     time.Unix(0, j.GetWhen()),
 		})
 	}
 	ids, err := s.Queue.Push(jobs...)
