@@ -9,15 +9,9 @@ import (
 
 // Queue holds a reference to a redis connection and a queue name.
 type Queue struct {
-	conn   redis.Conn
-	name   string
-	Pool   *redis.Pool
-	prefix string
-
-	// scripts
-	popJobsScript *redis.Script
-	pushScript    *redis.Script
-	removeScript  *redis.Script
+	conn redis.Conn
+	Name string
+	Pool *redis.Pool
 }
 
 type LoopOptions struct {
@@ -28,7 +22,6 @@ type LoopOptions struct {
 type Option func(*Queue)
 
 func WithConn(c redis.Conn) Option  { return func(q *Queue) { q.conn = c } }
-func WithPrefix(p string) Option    { return func(q *Queue) { q.prefix = p } }
 func WithPool(p *redis.Pool) Option { return func(q *Queue) { q.Pool = p } }
 
 func (q *Queue) Conn() (redis.Conn, bool) {
@@ -62,15 +55,10 @@ func (q *Queue) Loop(cb func([]string, error), opts *LoopOptions) {
 	}
 }
 
-func (q *Queue) Name() string { return q.prefix + q.name }
-
 // New defines a new Queue
 func New(name string, opt Option) *Queue {
-	q := &Queue{name: name, prefix: "airq:"}
+	q := &Queue{Name: name}
 	opt(q)
-	q.popJobsScript = redis.NewScript(1, fmt.Sprintf(popJobsScript, q.prefix))
-	q.pushScript = redis.NewScript(1, fmt.Sprintf(pushScript, q.prefix))
-	q.removeScript = redis.NewScript(1, fmt.Sprintf(removeScript, q.prefix))
 	return q
 }
 
@@ -85,14 +73,14 @@ func (q *Queue) Push(jobs ...*Job) (ids []string, err error) {
 	if managed {
 		defer c.Close()
 	}
-	keysAndArgs := redis.Args{q.name}
+	keysAndArgs := redis.Args{q.Name}
 	for _, j := range jobs {
 		keysAndArgs = keysAndArgs.AddFlat(j.String())
 		ids = append(ids, j.ID)
 	}
-	ok, err := redis.Int(q.pushScript.Do(c, keysAndArgs...))
+	ok, err := redis.Int(pushScript.Do(c, keysAndArgs...))
 	if err == nil && ok != 1 {
-		err = fmt.Errorf("can't add all jobs %v to queue %s", jobs, q.name)
+		err = fmt.Errorf("can't add all jobs %v to queue %s", jobs, q.Name)
 	}
 	return ids, err
 }
@@ -103,7 +91,7 @@ func (q *Queue) Pending() (int64, error) {
 	if managed {
 		defer c.Close()
 	}
-	return redis.Int64(c.Do("ZCARD", q.Name()))
+	return redis.Int64(c.Do("ZCARD", q.Name))
 }
 
 // Pop removes and returns a single job from the queue. Safe for concurrent use
@@ -129,8 +117,8 @@ func (q *Queue) PopJobs(limit int) (res []string, err error) {
 	if managed {
 		defer c.Close()
 	}
-	redisRes, err := redis.Strings(q.popJobsScript.Do(
-		c, q.name, time.Now().UnixNano(), limit,
+	redisRes, err := redis.Strings(popJobsScript.Do(
+		c, q.Name, time.Now().UnixNano(), limit,
 	))
 	if err != nil {
 		return nil, err
@@ -150,9 +138,9 @@ func (q *Queue) Remove(ids ...string) error {
 	if managed {
 		defer c.Close()
 	}
-	ok, err := redis.Int(q.removeScript.Do(c, redis.Args{q.name}.AddFlat(ids)...))
+	ok, err := redis.Int(removeScript.Do(c, redis.Args{q.Name}.AddFlat(ids)...))
 	if err == nil && ok != 1 {
-		err = fmt.Errorf("can't delete all jobs %v in queue %s", ids, q.name)
+		err = fmt.Errorf("can't delete all jobs %v in queue %s", ids, q.Name)
 	}
 	return err
 }

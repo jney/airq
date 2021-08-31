@@ -24,8 +24,8 @@ func setup(t *testing.T) (*Queue, func()) {
 		if managed {
 			defer conn.Close()
 		}
-		conn.Send("DEL", q.Name())
-		conn.Send("DEL", q.Name()+":values")
+		conn.Send("DEL", q.Name)
+		conn.Send("DEL", q.Name+":values")
 		conn.Close()
 	}
 	return q, teardown
