@@ -69,7 +69,7 @@ func TestQueueTasks(t *testing.T) {
 	}
 
 	// it adds a `Unique` job
-	_, err = q.Push(&Job{Content: "basic item 1", Unique: true})
+	_, err = q.Push(&Job{Content: "basic item 1", Strategy: CreateStrategy})
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

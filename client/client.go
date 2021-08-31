@@ -23,10 +23,10 @@ func (c *Client) Push(ctx context.Context, jobs ...*airq.Job) (*job.IdList, erro
 	jobList := new(job.JobList)
 	for _, j := range jobs {
 		jobList.Jobs = append(jobList.Jobs, &job.Job{
-			Id:      j.ID,
-			Content: j.Content,
-			Unique:  j.Unique,
-			When:    j.When.UnixNano(),
+			Id:       j.ID,
+			Content:  j.Content,
+			Strategy: int32(j.Strategy),
+			When:     j.When.UnixNano(),
 		})
 	}
 	client := job.NewJobsClient(c.Conn)

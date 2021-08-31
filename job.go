@@ -12,12 +12,20 @@ import (
 	"github.com/shamaton/msgpackgen/msgpack"
 )
 
+type Strategy int
+
+const (
+	UpdateStrategy Strategy = iota // update the job with same signature (change execution time)
+	CreateStrategy                 // create a new job even if it's the same signature
+	KeepStrategy                   // [TODO] keep the one already in keep (don't do anything)
+)
+
 // Job is the struct of job in queue
 type Job struct {
 	CompressedContent string    `msgpack:"content"`
 	Content           string    `msgpack:"-"`
 	ID                string    `msgpack:"id"`
-	Unique            bool      `msgpack:"-"`
+	Strategy          Strategy  `msgpack:"-"`
 	When              time.Time `msgpack:"-"`
 	WhenUnixNano      int64     `msgpack:"when"`
 }
@@ -39,7 +47,7 @@ func uncompress(in string) string {
 }
 
 func (j *Job) generateID() string {
-	if j.Unique {
+	if j.Strategy == CreateStrategy {
 		return xid.New().String()
 	}
 	return strconv.FormatUint(xxhash.Sum64String(j.Content), 10)

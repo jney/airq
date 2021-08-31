@@ -14,7 +14,7 @@ message IdList {
 message Job {
   string id = 1;
   string content = 2;
-  bool unique = 3;
+  int32 strategy = 3;
   int64 when = 4;
 }
 

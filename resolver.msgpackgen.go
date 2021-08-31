@@ -991,7 +991,7 @@ func ___calcArraySizeJob_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501
 	size += encoder.CalcStructHeaderFix(4)
 	size += encoder.CalcString(v.Id)
 	size += encoder.CalcString(v.Content)
-	size += encoder.CalcBool(v.Unique)
+	size += encoder.CalcInt32(v.Strategy)
 	size += encoder.CalcInt64(v.When)
 	return size, nil
 }
@@ -1004,8 +1004,8 @@ func ___calcMapSizeJob_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7
 	size += encoder.CalcString(v.Id)
 	size += encoder.CalcStringFix(7)
 	size += encoder.CalcString(v.Content)
-	size += encoder.CalcStringFix(6)
-	size += encoder.CalcBool(v.Unique)
+	size += encoder.CalcStringFix(8)
+	size += encoder.CalcInt32(v.Strategy)
 	size += encoder.CalcStringFix(4)
 	size += encoder.CalcInt64(v.When)
 	return size, nil
@@ -1017,7 +1017,7 @@ func ___encodeArrayJob_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7
 	offset = encoder.WriteStructHeaderFixAsArray(4, offset)
 	offset = encoder.WriteString(v.Id, offset)
 	offset = encoder.WriteString(v.Content, offset)
-	offset = encoder.WriteBool(v.Unique, offset)
+	offset = encoder.WriteInt32(v.Strategy, offset)
 	offset = encoder.WriteInt64(v.When, offset)
 	return encoder.EncodedBytes(), offset, err
 }
@@ -1030,8 +1030,8 @@ func ___encodeMapJob_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7d8
 	offset = encoder.WriteString(v.Id, offset)
 	offset = encoder.WriteStringFix("Content", 7, offset)
 	offset = encoder.WriteString(v.Content, offset)
-	offset = encoder.WriteStringFix("Unique", 6, offset)
-	offset = encoder.WriteBool(v.Unique, offset)
+	offset = encoder.WriteStringFix("Strategy", 8, offset)
+	offset = encoder.WriteInt32(v.Strategy, offset)
 	offset = encoder.WriteStringFix("When", 4, offset)
 	offset = encoder.WriteInt64(v.When, offset)
 	return encoder.EncodedBytes(), offset, err
@@ -1060,12 +1060,12 @@ func ___decodeArrayJob_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7
 		v.Content = vv
 	}
 	{
-		var vv bool
-		vv, offset, err = decoder.AsBool(offset)
+		var vv int32
+		vv, offset, err = decoder.AsInt32(offset)
 		if err != nil {
 			return 0, err
 		}
-		v.Unique = vv
+		v.Strategy = vv
 	}
 	{
 		var vv int64
@@ -1082,9 +1082,9 @@ func ___decodeArrayJob_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7
 func ___decodeMapJob_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7d80eaf5(v *job.Job, decoder *dec.Decoder, offset int) (int, error) {
 	keys := [][]byte{
 		{uint8(0x49), uint8(0x64)}, // Id
-		{uint8(0x43), uint8(0x6f), uint8(0x6e), uint8(0x74), uint8(0x65), uint8(0x6e), uint8(0x74)}, // Content
-		{uint8(0x55), uint8(0x6e), uint8(0x69), uint8(0x71), uint8(0x75), uint8(0x65)},              // Unique
-		{uint8(0x57), uint8(0x68), uint8(0x65), uint8(0x6e)},                                        // When
+		{uint8(0x43), uint8(0x6f), uint8(0x6e), uint8(0x74), uint8(0x65), uint8(0x6e), uint8(0x74)},              // Content
+		{uint8(0x53), uint8(0x74), uint8(0x72), uint8(0x61), uint8(0x74), uint8(0x65), uint8(0x67), uint8(0x79)}, // Strategy
+		{uint8(0x57), uint8(0x68), uint8(0x65), uint8(0x6e)},                                                     // When
 	}
 	offset, err := decoder.CheckStructHeader(4, offset)
 	if err != nil {
@@ -1136,12 +1136,12 @@ func ___decodeMapJob_b55a38cc87e11cb8f2d23e7ce8389b663c787d0dedbf2d2a15da501e7d8
 			count++
 		case 2:
 			{
-				var vv bool
-				vv, offset, err = decoder.AsBool(offset)
+				var vv int32
+				vv, offset, err = decoder.AsInt32(offset)
 				if err != nil {
 					return 0, err
 				}
-				v.Unique = vv
+				v.Strategy = vv
 			}
 			count++
 		case 3:
