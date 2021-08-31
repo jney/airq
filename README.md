@@ -1,4 +1,4 @@
-# Air Q (*r*edis *q*ueue) <a href="https://travis-ci.com/jney/airq"><img src="https://travis-ci.com/jney/airq.svg?branch=master" alt="Build Status"></a>
+# Air Q (*r*edis *q*ueue) <a href="https://travis-ci.com/jney/airq"><img src="https://travis-ci.com/jney/airq.svg?branch=main" alt="Build Status"></a>
 
 ## What and why
 
