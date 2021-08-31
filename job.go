@@ -26,8 +26,18 @@ type Job struct {
 	Content           string    `msgpack:"-"`
 	ID                string    `msgpack:"id"`
 	Strategy          Strategy  `msgpack:"-"`
+	Subject           string    `msgpack:"subject"`
 	When              time.Time `msgpack:"-"`
 	WhenUnixNano      int64     `msgpack:"when"`
+}
+
+func newJobFromString(in string) (*Job, error) {
+	var j Job
+	if err := msgpack.Unmarshal([]byte(in), &j); err != nil {
+		return nil, err
+	}
+	j.Content = uncompress(j.CompressedContent)
+	return &j, nil
 }
 
 func compress(in string) string {

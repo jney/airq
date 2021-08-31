@@ -20,7 +20,7 @@ local content_queue = id_queue .. ":values"
 for i=1, #ARGV do
 	local _, job = cmsgpack.unpack_one(ARGV[i])
 	redis.call("zadd", id_queue, job.when, job.id)
-	redis.call("hset", content_queue, job.id, job.content)
+	redis.call("hset", content_queue, job.id, ARGV[i])
 end
 return 1`)
 

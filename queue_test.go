@@ -3,7 +3,6 @@ package airq
 import (
 	"crypto/rand"
 	"encoding/base64"
-	"reflect"
 	"testing"
 	"time"
 
@@ -119,7 +118,7 @@ func TestQueueTaskScheduling(t *testing.T) {
 		t.FailNow()
 	}
 
-	if job != "" {
+	if job != nil {
 		t.Error("Didn't expect to get a job off the queue but I got one.")
 	}
 
@@ -132,7 +131,7 @@ func TestQueueTaskScheduling(t *testing.T) {
 		t.FailNow()
 	}
 
-	if job != "scheduled item 1" {
+	if job.Content != "scheduled item 1" {
 		t.Error("Expected to get a job off the queue, but I got this:", job)
 	}
 }
@@ -153,7 +152,7 @@ func TestPopOrder(t *testing.T) {
 		t.FailNow()
 	}
 
-	if job != "oldest" {
+	if job.Content != "oldest" {
 		t.Error("Expected to the oldest job off the queue, but I got this:", job)
 	}
 
@@ -163,7 +162,7 @@ func TestPopOrder(t *testing.T) {
 		t.FailNow()
 	}
 
-	if job != "older" {
+	if job.Content != "older" {
 		t.Error("Expected to the older job off the queue, but I got this:", job)
 	}
 
@@ -173,7 +172,7 @@ func TestPopOrder(t *testing.T) {
 		t.FailNow()
 	}
 
-	if job != "newer" {
+	if job.Content != "newer" {
 		t.Error("Expected to the newer job off the queue, but I got this:", job)
 	}
 
@@ -182,7 +181,7 @@ func TestPopOrder(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	if job != "" {
+	if job != nil {
 		t.Error("Expected no jobs")
 	}
 }
@@ -203,9 +202,10 @@ func TestPopMultiOrder(t *testing.T) {
 		t.FailNow()
 	}
 
-	expected := []string{"oldest", "older", "newer"}
-	if !reflect.DeepEqual(jobs, expected) {
-		t.Error("Expected to having jobs off the queue:", expected, " but I got this:", jobs)
+	for i, expected := range []string{"oldest", "older", "newer"} {
+		if jobs[i].Content != expected {
+			t.Error("Expected to having jobs off the queue:", expected, " but I got this:", jobs)
+		}
 	}
 
 	job, err := q.Pop()
@@ -213,7 +213,7 @@ func TestPopMultiOrder(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	if job != "" {
+	if job != nil {
 		t.Error("Expected no jobs")
 	}
 }
@@ -236,8 +236,8 @@ func TestRemove(t *testing.T) {
 		t.FailNow()
 	}
 
-	expected := []string{"newer"}
-	if !reflect.DeepEqual(jobs, expected) {
+	expected := "newer"
+	if jobs[0].Content != expected {
 		t.Error("Expected to having jobs off the queue:", expected, " but I got this:", jobs)
 	}
 }
