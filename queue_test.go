@@ -20,9 +20,13 @@ func setup(t *testing.T) (*Queue, func()) {
 	}
 	q := New(name, WithConn(c))
 	teardown := func() {
-		// q.Conn.Send("DEL", q.Name)
-		// q.Conn.Send("DEL", q.Name+":values")
-		q.Conn.Close()
+		conn, managed := q.Conn()
+		if managed {
+			defer conn.Close()
+		}
+		conn.Send("DEL", q.Name())
+		conn.Send("DEL", q.Name()+":values")
+		conn.Close()
 	}
 	return q, teardown
 }
@@ -61,6 +65,7 @@ func TestQueueTasks(t *testing.T) {
 	pending, _ := q.Pending()
 	if pending != 1 {
 		t.Error("Expected 1 job pending in queue, was", pending)
+		t.FailNow()
 	}
 
 	// it adds a `Unique` job
@@ -73,6 +78,7 @@ func TestQueueTasks(t *testing.T) {
 	pending, _ = q.Pending()
 	if pending != 2 {
 		t.Error("Expected 2 jobs pending in queue, was", pending)
+		t.FailNow()
 	}
 
 	// it adds 2 jobs at once
