@@ -103,7 +103,7 @@ func (q *Queue) Pending() (int64, error) {
 	if managed {
 		defer c.Close()
 	}
-	return redis.Int64(c.Do("ZCARD", q.prefix+q.name))
+	return redis.Int64(c.Do("ZCARD", q.Name()))
 }
 
 // Pop removes and returns a single job from the queue. Safe for concurrent use
