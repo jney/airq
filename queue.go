@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gomodule/redigo/redis"
+	"github.com/hashicorp/go-multierror"
 )
 
 // Queue holds a reference to a redis connection and a queue name.
@@ -35,7 +36,7 @@ func (q *Queue) Conn() (redis.Conn, bool) {
 }
 
 // Loop over the queue
-func (q *Queue) Loop(cb func([]string, error), opts *LoopOptions) {
+func (q *Queue) Loop(cb func([]*Job, error), opts *LoopOptions) {
 	if opts == nil {
 		opts = new(LoopOptions)
 	}
@@ -96,22 +97,22 @@ func (q *Queue) Pending() (int64, error) {
 
 // Pop removes and returns a single job from the queue. Safe for concurrent use
 // (multiple goroutines must use their own Queue objects and redis connections)
-func (q *Queue) Pop() (string, error) {
+func (q *Queue) Pop() (*Job, error) {
 	jobs, err := q.PopJobs(1)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if len(jobs) == 0 {
-		return "", nil
+		return nil, nil
 	}
 	return jobs[0], nil
 }
 
 // PopJobs returns multiple jobs from the queue. Safe for concurrent use
 // (multiple goroutines must use their own Queue objects and redis connections)
-func (q *Queue) PopJobs(limit int) (res []string, err error) {
+func (q *Queue) PopJobs(limit int) (res []*Job, err error) {
 	if limit == 0 {
-		return []string{}, fmt.Errorf("limit 0")
+		return res, fmt.Errorf("limit 0")
 	}
 	c, managed := q.Conn()
 	if managed {
@@ -123,8 +124,14 @@ func (q *Queue) PopJobs(limit int) (res []string, err error) {
 	if err != nil {
 		return nil, err
 	}
+	var mErr error
 	for _, r := range redisRes {
-		res = append(res, uncompress(r))
+		j, err := newFromString(r)
+		if err != nil {
+			mErr = multierror.Append(mErr, err)
+			continue
+		}
+		res = append(res, j)
 	}
 	return res, nil
 }
