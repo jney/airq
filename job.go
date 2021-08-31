@@ -31,7 +31,7 @@ type Job struct {
 	WhenUnixNano      int64     `msgpack:"when"`
 }
 
-func newFromString(in string) (*Job, error) {
+func newJobFromString(in string) (*Job, error) {
 	var j Job
 	if err := msgpack.Unmarshal([]byte(in), &j); err != nil {
 		return nil, err

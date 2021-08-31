@@ -126,7 +126,7 @@ func (q *Queue) PopJobs(limit int) (res []*Job, err error) {
 	}
 	var mErr error
 	for _, r := range redisRes {
-		j, err := newFromString(r)
+		j, err := newJobFromString(r)
 		if err != nil {
 			mErr = multierror.Append(mErr, err)
 			continue
